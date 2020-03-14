@@ -1,0 +1,12 @@
+{
+  "name": "nginx-unit-builder",
+  "version": "0.0.0",
+  "description": "nginx unit builder",
+  "keywords": [
+    "nginx",
+    "unit",
+    "builder"
+  ],
+  "author": "Dmitry N. Medvedev <dmitry.medvedev@gmail.com>",
+  "license": "MIT"
+}

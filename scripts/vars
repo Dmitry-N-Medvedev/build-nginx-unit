@@ -1,0 +1,41 @@
+#!/bin/bash
+
+export CWD=$(pwd)
+export SOURCES="$CWD/sources"
+export DISTRO="$CWD/distro"
+
+# ZLIB
+export ZLIB_GIT="https://github.com/madler/zlib"
+export ZLIB_SOURCES="$SOURCES/zlib"
+export ZLIB_PREFIX="$DISTRO/usr/local"
+
+# OPENSSL
+export KERNEL_BITS=64
+export OPENSSL_GIT="git://git.openssl.org/openssl.git"
+export OPENSSL_SOURCES="$SOURCES/openssl"
+export OPENSSL_PREFIX="$DISTRO/usr/local"
+export OPENSSL_CONFIGS_DIR="$DISTRO/usr/local/ssl"
+
+# UNIT
+export UNIT_GIT="https://github.com/nginx/unit"
+export UNIT_SOURCES="$SOURCES/unit"
+export UNIT_PREFIX="$DISTRO/usr/local/unit"
+export UNIT_BINDIR="$UNIT_PREFIX/bin"
+export UNIT_SBINDIR="$UNIT_PREFIX/sbin"
+export UNIT_CONTROL="unix:$DISTRO/var/run/control.unit.sock"
+export UNIT_INCDIR="$UNIT_PREFIX/include"
+export UNIT_LIBDIR="$UNIT_PREFIX/lib"
+export UNIT_LOG="$DISTRO/var/log/unit.log"
+export UNIT_MODULES="$UNIT_PREFIX/modules"
+export UNIT_PID="$DISTRO/var/run/unit.pid"
+export UNIT_STATE="$UNIT_PREFIX/state"
+export UNIT_TMP="$DISTRO/tmp/unit"
+export NODE_GYP="$(dirname $(dirname $(realpath $(which node))))/lib/node_modules/npm/bin/node-gyp-bin/node-gyp"
+export NPM=$(which pnpm)
+export UNIT_SRC_PATH=$UNIT_SOURCES/src
+export UNIT_BUILD_PATH=$UNIT_SOURCES/build
+export UNIT_LIB_STATIC_PATH=$UNIT_BUILD_PATH/libunit.a
+
+export NPM_CONFIG_PREFIX=$(dirname $(dirname $(realpath $(which node))))
+
+npm config set prefix $NPM_CONFIG_PREFIX

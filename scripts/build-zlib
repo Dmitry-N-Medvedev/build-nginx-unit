@@ -1,0 +1,17 @@
+#!/bin/bash
+
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+source "$CURRENT_DIR/vars"
+
+if [ ! -d "$ZLIB_SOURCES" ]
+then
+  mkdir -p "$ZLIB_SOURCES" && cd "$ZLIB_SOURCES" && git clone "$ZLIB_GIT" .
+else
+  cd "$ZLIB_SOURCES" && git reset --hard HEAD && git pull
+fi
+
+./configure \
+  --prefix=$ZLIB_PREFIX
+
+make && make install
