@@ -4,7 +4,7 @@
 
 ## the goal
 
-...is to have a set of scripts that would
+The goal is to have a set of scripts that would
 
 1. build and install the NGINX UNIT in the specified directories
 2. build NodeJS module and package it for self-contained installation suitable for simple `pnpm install` and without any external dependencies.
