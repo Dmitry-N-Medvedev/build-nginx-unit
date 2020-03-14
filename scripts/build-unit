@@ -1,0 +1,49 @@
+#!/bin/bash
+
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+source "$CURRENT_DIR/vars"
+
+NODE_MODULE_DIR="$UNIT_MODULES/node"
+
+if [[ ! -f "$OPENSSL_PREFIX/include/openssl/ssl.h" ]]
+then
+  source "$CURRENT_DIR/build-openssl"
+fi
+
+if [ ! -d "$UNIT_SOURCES" ]
+then
+  mkdir -p "$UNIT_SOURCES" && cd "$UNIT_SOURCES" && git clone "$UNIT_GIT" .
+else
+  cd "$UNIT_SOURCES" && git reset --hard HEAD && git pull "$UNIT_GIT" && make clean
+fi
+
+./configure \
+  --debug \
+  --openssl \
+  --prefix=$UNIT_PREFIX \
+  --bindir=$UNIT_BINDIR \
+  --sbindir=$UNIT_SBINDIR \
+  --control=$UNIT_CONTROL \
+  --incdir=$UNIT_INCDIR \
+  --libdir=$UNIT_LIBDIR \
+  --log=$UNIT_LOG \
+  --modules=$UNIT_MODULES \
+  --pid=$UNIT_PID \
+  --state=$UNIT_STATE \
+  --tmp=$UNIT_TMP \
+  --cc-opt="-Wno-deprecated-declarations -I$OPENSSL_PREFIX"
+
+./configure nodejs \
+  --node-gyp=$NODE_GYP \
+  --local=$UNIT_PREFIX
+
+make && make install && make node-local-install && npm uninstall -g unit-http
+
+mkdir -p "$NODE_MODULE_DIR"
+cp $UNIT_SRC_PATH/nxt_unit.h "$NODE_MODULE_DIR"
+cp "$UNIT_BUILD_PATH/node-unit-http.tar.gz" "$NODE_MODULE_DIR"
+
+pnpm add $NODE_MODULE_DIR/node-unit-http.tar.gz && pnpm install
+
+

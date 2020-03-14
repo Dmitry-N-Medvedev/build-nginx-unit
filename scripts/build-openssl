@@ -1,0 +1,39 @@
+#!/bin/bash
+
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+source "$CURRENT_DIR/vars"
+
+ZLIB_INCLUDE="$ZLIB_PREFIX/include"
+ZLIB_LIB="$ZLIB_PREFIX/lib"
+
+if [[ ! -f "$ZLIB_INCLUDE/zlib.h" ]] || [[ ! -f "$ZLIB_LIB/libz.a" ]]
+then
+  source "$CURRENT_DIR/build-zlib"
+fi
+
+if [[ ! -d "$OPENSSL_SOURCES" ]]
+then
+  mkdir -p "$OPENSSL_SOURCES" && cd "$OPENSSL_SOURCES" && git clone "$OPENSSL_GIT" .
+else
+  cd "$OPENSSL_SOURCES" && git reset --hard HEAD 2>&1 > /dev/null && git pull "$OPENSSL_GIT"
+fi
+
+cd "$OPENSSL_SOURCES"
+
+./config \
+  --prefix=$OPENSSL_PREFIX \
+  --openssldir=$OPENSSL_CONFIGS_DIR \
+  '-Wl,-rpath,$(LIBRPATH)' \
+  --release \
+  --with-zlib-include=$ZLIB_INCLUDE \
+  --with-zlib-lib=$ZLIB_LIB \
+  enable-ktls \
+  no-deprecated \
+  enable-ec_nistp_64_gcc_128 \
+  no-legacy \
+  threads \
+  zlib
+
+make && make install_sw
+
